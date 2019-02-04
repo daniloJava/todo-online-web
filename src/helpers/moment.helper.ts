@@ -1,5 +1,7 @@
 import moment from 'moment';
 
+moment.locale('pt-br');
+
 export class MomentHelper {
 
   public static DEFAULT_DATE_PATTERN: string = 'DD/MM/YYYY';
@@ -41,6 +43,22 @@ export class MomentHelper {
 
   public static currentDateTimeEndOf(pattern?: moment.unitOfTime.StartOf): Date {
     return moment().endOf(pattern || MomentHelper.DEFUALT_TIME_PATTERN_OF).toDate();
+  }
+
+  public static isGreaterThanCurrentYear(value: number): boolean {
+    return value > MomentHelper.currentYear();
+  }
+
+  public static isPeriodGreaterThan(start: Date, end: Date, maxDays: number = 7): boolean {
+    const difference = moment(end).diff(moment(start));
+    const days = Math.floor(moment.duration(difference).asDays());
+
+    return days > maxDays;
+  }
+
+  public static age(value: string, pattern: string): number {
+    const birthday = MomentHelper.format(value, pattern);
+    return Math.floor(moment.duration(moment().diff(birthday)).asYears());
   }
 
 }

@@ -1,5 +1,15 @@
 import Vue from 'vue';
 
+// Vue HighlightJS => https://github.com/metachris/vue-highlightjs
+import VueHighlightJS from 'vue-highlightjs';
+
+Vue.use(VueHighlightJS);
+
+// Vue Awesome Swiper => http://idangero.us/swiper/api/
+import 'swiper/dist/css/swiper.css';
+import VueAwesomeSwiper from 'vue-awesome-swiper';
+Vue.use(VueAwesomeSwiper);
+
 // Bootstrap => https://bootstrap-vue.js.org/docs/
 import BootstrapVue from 'bootstrap-vue';
 
@@ -34,13 +44,29 @@ import {
   TimePicker,
   Tooltip,
 } from 'element-ui';
+import { ElNotificationOptions} from 'element-ui/types/notification';
 import { MessageType } from 'element-ui/types/message';
+import CollapseTransition from 'element-ui/lib/transitions/collapse-transition';
+import lang from 'element-ui/lib/locale/lang/pt-br';
+import locale from 'element-ui/lib/locale';
+
+locale.use(lang);
 
 // APP UI
-import HelloWorld from './HelloWorld.vue';
+import BlockUi from './block-ui.vue';
+import Card from './card.vue';
+import NetworkStatus from './network-status.vue';
+import PageHeader from './page-header.vue';
+import Photo from './photo.vue';
+import TableCollapse from './table-collapse.vue';
 
 const components: any = {
-  HelloWorld,
+  BlockUi,
+  Card,
+  NetworkStatus,
+  PageHeader,
+  Photo,
+  TableCollapse,
 };
 
 const install: any = (vue: Vue, opts = {}) => {
@@ -61,6 +87,7 @@ const install: any = (vue: Vue, opts = {}) => {
   Vue.component(Carousel.name, Carousel);
   Vue.component(CarouselItem.name, CarouselItem);
   Vue.component(Checkbox.name, Checkbox);
+  Vue.component(CollapseTransition.name, CollapseTransition);
   Vue.component(DatePicker.name, DatePicker);
   Vue.component(Dropdown.name, Dropdown);
   Vue.component(DropdownMenu.name, DropdownMenu);
