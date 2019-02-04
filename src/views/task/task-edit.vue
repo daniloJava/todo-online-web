@@ -1,15 +1,8 @@
 <template>
   <div id="task-edit">
-    <app-page-header title="Tasks" subtitle="Edit"></app-page-header>
-    <div class="breadcrumb-line header-elements-md-inline" style="margin-top: -45px; margin-left: 6px;">
-      <div class="d-flex">
-        <div class="breadcrumb">
-          <a href="index.html" class="breadcrumb-item"> Início</a>
-          <a href="content_cards_content.html" class="breadcrumb-item">Tasks</a>
-          <span class="breadcrumb-item active">Record XXX</span>
-        </div>
-
-        <a href="#" class="header-elements-toggle text-default d-md-none"><i class="icon-more"></i></a>
+    <div class="row">
+      <div class="col-sm-8">
+        <task-form id="task-form" :model="model" @cancel="onCancel" @save="onUpdate"></task-form>
       </div>
     </div>
   </div>
@@ -33,8 +26,13 @@ export default class TaskEdit extends Vue {
 
   public onCancel(model: Task): void {
     this.$router.push({
-      name: 'TaskList',
+      name: 'TasksList',
     });
+  }
+
+  public onUpdate(model: Task): void {
+    const a = this.$store.dispatch('tasks/update', { model });
+    console.log(a);
   }
 
 }

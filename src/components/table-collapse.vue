@@ -24,7 +24,7 @@
             <span class="b-pagination-line">{{ total }}</span>
         </div>
         <div class="col-sm">
-          <b-pagination size="md" :total-rows="result.page.count > 500 ? 500 : result.page.count" v-model="currentPage" :per-page="result.pageable.pageSize" @change="onPageChange"></b-pagination>
+          <b-pagination size="md" :total-rows="result.page.count" v-model="currentPage" :per-page="result.pageable.pageSize" @change="onPageChange"></b-pagination>
         </div>
       </div>
     </div>

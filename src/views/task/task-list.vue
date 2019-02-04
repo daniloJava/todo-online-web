@@ -2,9 +2,9 @@
   <div id="task-list">
     <app-page-header title="Tasks" subtitle="List"></app-page-header>
 
-    <task-filter id="task-filter" :model="filter" @reset="onReset" @search="onSearch"></task-filter>
-
-    <task-table id="task-table" :page="page" :pageable="pageable" @page-changed="onPageChanged" @edit="onEdit" @view="onView"></task-table>
+    <task-filter id="task-filter" :filter="filter" @reset="onReset" @search="onSearch"></task-filter>
+    
+    <task-table id="task-table" :result="taks" :loading="loading" :pageable="pageable" @page-change="onPageChanged" @edit="onEdit" @view="onView" @refresh="onRefresh" @detail="onDetail"></task-table>
   </div>
 </template>
 
@@ -13,7 +13,7 @@ import _ from 'lodash';
 import { Component, Model, Vue } from 'vue-property-decorator';
 import { Observable, Subscription } from 'rxjs';
 
-import { Task, FilterTask, Page, Pageable } from '@/models';
+import { Task, FilterTask, Page, ResultList, Pageable } from '@/models';
 import { TaskService } from '@/services';
 import TaskFilter from '@/views/task/shared/task-filter.vue';
 import TaskTable from '@/views/task/shared/task-table.vue';
@@ -68,6 +68,10 @@ export default class TaskList extends Vue {
 
   private get loading(): boolean {
     return this.$store.getters['tasks/loading'];
+  }
+
+    private get taks(): ResultList<Task> {
+    return this.$store.getters['tasks/resultList'];
   }
 
   private dispatchTasks(filter: FilterTask, pageable: Pageable): void {

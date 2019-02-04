@@ -7,7 +7,11 @@ import {
 } from '@/models';
 import { AbstractService, findById, query } from '@/services';
 
-export class TaskService {
+export class TaskService extends AbstractService<Task, number> {
+
+  constructor() {
+    super(`${AbstractService.baseUrl}/task/task`);
+  }
 
   public static query(params: any, pageable: Pageable): Observable<Page<Task>> {
     return query(`${this.endpoint}`, normalizeFilter(params), pageable);

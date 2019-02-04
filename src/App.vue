@@ -3,12 +3,15 @@
     <div id="nav">
       <router-link to="/">Home</router-link> |
       <router-link to="/about">About</router-link>
+      <router-link to="/tasks">Tasks</router-link>
     </div>
     <router-view/>
   </div>
 </template>
 
 <style lang="scss">
+@import "./styles/layouts/layout_2/default/compile/bootstrap";
+
 #app {
   font-family: 'Avenir', Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;

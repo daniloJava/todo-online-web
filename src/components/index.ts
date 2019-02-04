@@ -57,7 +57,6 @@ import BlockUi from './block-ui.vue';
 import Card from './card.vue';
 import NetworkStatus from './network-status.vue';
 import PageHeader from './page-header.vue';
-import Photo from './photo.vue';
 import TableCollapse from './table-collapse.vue';
 
 const components: any = {
@@ -65,7 +64,6 @@ const components: any = {
   Card,
   NetworkStatus,
   PageHeader,
-  Photo,
   TableCollapse,
 };
 

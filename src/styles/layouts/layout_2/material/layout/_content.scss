@@ -1,0 +1,40 @@
+/* ------------------------------------------------------------------------------
+ *
+ *  # Main content layout
+ *
+ *  Styles for main structure of content area
+ *
+ * ---------------------------------------------------------------------------- */
+
+// Make sure document has 100% height
+html {
+    height: 100%;
+}
+
+// Document body
+body {
+    min-height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+// Main container
+.page-content {
+    display: flex;
+    flex: 1;
+}
+
+// Content wrapper
+.content-wrapper {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: auto;
+}
+
+// Main content container
+.content {
+    padding: $content-container-padding-y $content-container-padding-x;
+    flex: 1;
+    @include clearfix;
+}

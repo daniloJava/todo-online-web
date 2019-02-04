@@ -1,32 +1,27 @@
 <template>
   <div class="card">
-    <div class="alert alert-primary border-0 rounded-0" style="margin-left: -20px; margin-right: -20px;">
-      <small>Pesquisa com <b class="font-weight-bold">" * "</b> - Retorna todos os registros que possuam as combinações informadas Ex.: TUD*1. Resultado: TUD1001, TUD0021, TUD0001.</small>
-      <br>
-      <small>Pesquisa com <b class="font-weight-bold">" ? "</b> - Substitui um caractere desconhecido (ou que não se deseja informar) em determinada posição no campo de pesquisa. Ex1.: SAV?002. Resultado: SAV0002, SAV7002. Ex.2: SAV000?. Resultado: SAV0002, SAV0005, SAV0008. Ex3.: BGT??37. Resultado: BGT1237, BGT5937.</small>
+    <div class="container">
+      <el-form id="form" ref="form" :model="filter" label-position="top">
+        <div class="row">
+          <div class="col">
+            <el-form-item id="title" prop="title">
+              <div slot="label">
+                <span>Title</span>
+              </div>
+              <el-input ref="title" type="text" v-model="filter.title" :maxlength="7" :class="{'is-success': !!filter.title}"></el-input>
+            </el-form-item>
+          </div>
+          <div class="col">
+            <el-form-item id="status" prop="status">
+              <div slot="label">
+                <span>Status</span>
+              </div>
+              <el-input type="text" v-model="filter.status" :maxlength="17" :class="{'is-success': !!filter.status}"></el-input>
+            </el-form-item>
+          </div>
+        </div>
+      </el-form>
     </div>
-
-    <el-form id="form" ref="form" :model="filter" label-position="top">
-      <div class="row">
-        <div class="col-sm">
-          <el-form-item id="title" prop="title">
-            <div slot="label">
-              <span>Title</span>
-            </div>
-            <el-input ref="title" type="text" v-model="filter.title" :maxlength="7" :class="{'is-success': !!filter.title}"></el-input>
-          </el-form-item>
-        </div>
-        <div class="col-sm">
-          <el-form-item id="status" prop="status">
-            <div slot="label">
-              <span>Status</span>
-            </div>
-            <el-input type="text" v-model="filter.status" :maxlength="17" :class="{'is-success': !!filter.status}"></el-input>
-          </el-form-item>
-        </div>
-      </div>
-    </el-form>
-
     <div slot="footer">
       <el-button id="reset" type="default" @click="onReset"><i class="icon-eraser2 mr-1"></i>Limpar</el-button>
       <el-button id="search" type="primary" :loading="loading" @click="onSearch"><i :class="[ !loading ? 'icon-search4' : '', 'mr-1' ]"></i>{{ loading ? 'Pesquisando...' : 'Pesquisar' }}</el-button>
