@@ -97,8 +97,8 @@ export const listAll = <T extends AbstractModel<ID> | string, ID>(endpoint: stri
 export const listBy = <T extends AbstractModel<ID> | any, ID>(endpoint: string, params: any): Observable<T[]> => {
   return Observable.create((observer: any) => {
     Vue.axios.get<T[]>(`${endpoint}`, { params: prepareParams(params) })
-      .then((response) => {
-        observer.next(response.data);
+      .then((response: any) => {
+        observer.next(response.data.content);
         observer.complete();
       })
       .catch((error) => observer.error(error));

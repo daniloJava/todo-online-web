@@ -5,6 +5,7 @@ import Component from 'vue-class-component';
 import VueAxios from 'vue-axios';
 import 'element-ui/lib/theme-chalk/index.css';
 import 'bootstrap-vue/dist/bootstrap-vue.css';
+import 'bootstrap/dist/css/bootstrap.css';
 import 'viewerjs/dist/viewer.css';
 import 'highlight.js/styles/github.css';
 

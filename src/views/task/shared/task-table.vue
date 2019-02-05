@@ -9,7 +9,12 @@
           <tr>
             <th class="number-column">#</th>
             <th class="text-center">Title</th>
+            <th>Description</th>
+            <th>Crate date</th>
+            <th>Crate update</th>
+            <th>Group</th>
             <th>Status</th>
+            <th>Acões</th>
           </tr>
         </thead>
         <tbody>
@@ -30,7 +35,13 @@
               <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.dateUpdate | formatDateTime }}</router-link>
             </td>
             <td>
+              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.group.name | startCase }}</router-link>
+            </td>
+            <td>
               <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.status | startCase }}</router-link>
+            </td>
+            <td>
+              <el-button type="danger" @click="toTaskDelete(task)"><i class="el-icon-delete"></i></el-button>
             </td>
           </tr>
         </tbody>
@@ -57,8 +68,9 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Location } from 'vue-router';
-
+import { Notification } from 'element-ui';
 import { ResultList, Task } from '@/models';
+import { TaskService } from '@/services';
 
 @Component
 export default class TaskTable extends Vue {
@@ -93,6 +105,27 @@ export default class TaskTable extends Vue {
 
   private toTaskDetail(model: Task): Location {
     return { name: 'TasksDetail', params: { id: '' + model.id } };
+  }
+
+  private toTaskDelete(model: Task): void {
+    this.$confirm(`This will permanently delete the task "${model.title.toUpperCase()}". Continue?`, 'Warning', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    }).then(() => {
+      new TaskService().delete(model.id).toPromise()
+        .then(() => {
+          Notification.success({
+            title: 'Deleted',
+            message: `Delete completed ${model.title}.`,
+          });
+        });
+    }).catch(() => {
+      Notification.info({
+        title: 'Deleted',
+        message: 'Delete canceled.',
+      });
+    });
   }
 
   @Watch('result', { immediate: false, deep: true })

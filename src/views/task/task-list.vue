@@ -2,7 +2,7 @@
   <div id="task-list">
     <app-page-header title="Tasks" subtitle="List"></app-page-header>
 
-    <task-filter id="task-filter" :filter="filter" @reset="onReset" @search="onSearch"></task-filter>
+    <task-filter id="task-filter" :filter="filter" @reset="onReset" @search="onSearch" @create="onCreate" :loading="loading"></task-filter>
     
     <task-table id="task-table" :result="taks" :loading="loading" :pageable="pageable" @page-change="onPageChanged" @edit="onEdit" @view="onView" @refresh="onRefresh" @detail="onDetail"></task-table>
   </div>
@@ -60,6 +60,10 @@ export default class TaskList extends Vue {
 
   private onEdit(model: Task): void {
     this.$router.push({ name: 'TaskEdit', params: { id: '' + model.id } });
+  }
+
+  private onCreate(model: Task): void {
+    this.$router.push({ name: 'TasksCreate' });
   }
 
   private onView(model: Task): void {

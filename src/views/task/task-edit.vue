@@ -1,8 +1,8 @@
 <template>
   <div id="task-edit">
-    <div class="row">
-      <div class="col-sm-8">
-        <task-form id="task-form" :model="model" @cancel="onCancel" @save="onUpdate"></task-form>
+    <div class="conteiner">
+      <div class="row">
+        <task-form id="task-edit" :groups="groups" :model="model" @cancel="onCancel" @save="onUpdate" @group-autocomplete="onAutocomplete" @group-autocomplete-select="onAutocompleteComplete"></task-form>
       </div>
     </div>
   </div>
@@ -12,8 +12,8 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Observable, Subscription } from 'rxjs';
 
-import { Task } from '@/models';
-import { TaskService } from '@/services';
+import { Task, GroupTask } from '@/models';
+import { TaskService, GroupTaskService } from '@/services';
 import TaskForm from '@/views/task/shared/task-form.vue';
 
 @Component({
@@ -24,15 +24,36 @@ import TaskForm from '@/views/task/shared/task-form.vue';
 export default class TaskEdit extends Vue {
   private model: Task = new Task();
 
+  private groups: GroupTask[] = [];
+
+  protected mounted(): void {
+    if (this.$route.params.id) {
+      TaskService.findById(parseInt(this.$route.params.id, 10)).toPromise()
+        .then((task: Task) => {
+          this.model = task;
+        });
+    }
+  }
+
   public onCancel(model: Task): void {
-    this.$router.push({
-      name: 'TasksList',
-    });
+    this.$router.push({ name: 'TasksList' });
   }
 
   public onUpdate(model: Task): void {
-    const a = this.$store.dispatch('tasks/update', { model });
-    console.log(a);
+    this.$store.dispatch('tasks/updateOrUpdate', { model });
+    this.$router.push({ name: 'TasksList' });
+  }
+
+  private onAutocomplete(queryString: string, callback: (results: GroupTask[]) => void): void {
+    // tslint:disable-next-line:max-line-length
+    new GroupTaskService().listBy({ q: queryString }).toPromise()
+      .then((groups: GroupTask[]) => {
+        callback(groups);
+      });
+  }
+
+  private onAutocompleteComplete(group: GroupTask): void {
+    this.model.group = group;
   }
 
 }

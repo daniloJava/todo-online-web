@@ -55,6 +55,7 @@ export const mutations = {
   [Types.NO_RESULT](state: State) {
     state.loading = false;
     state.error = undefined;
+    state.model = new Task();
     state.page = new Page<Task>();
     state.pageable = new Pageable();
   },
@@ -62,6 +63,7 @@ export const mutations = {
     state.loading = false;
     state.filter = new FilterTask();
     state.error = undefined;
+    state.model = new Task();
     state.page = new Page<Task>();
     state.pageable = new Pageable();
   },
@@ -71,7 +73,7 @@ export const mutations = {
   },
   [Types.UPDATE](state: State, { model }) {
     state.loading = true;
-    state.filter = model;
+    state.model = model;
     state.error = undefined;
   },
   [Types.UPDATE_SUCCESS](state: State) {
@@ -81,9 +83,8 @@ export const mutations = {
 
     Notification.info({
       title: 'Informativo',
-      message: 'Nenhum registro encontrado.',
+      message: 'Registro Atualizado com sucesso.',
     });
-
   },
 } as MutationTree<State>;
 
@@ -105,14 +106,18 @@ export const actions = {
     }
   },
 
-  async update(store: ActionContext<State, any>, { model }) {
+  async updateOrUpdate(store: ActionContext<State, any>, { model }) {
     try {
       store.commit(Types.UPDATE, { model });
 
       const page = await new TaskService().save(model).toPromise();
       if (!page) {
         store.commit(Types.UPDATE_SUCCESS);
+        store.commit(Types.CLEAR);
+        store.dispatch('tasks/query', { filter: new FilterTask(), pageable: new Pageable()}, { root: true });
       }
+
+      store.commit(Types.UPDATE_SUCCESS);
 
       return page;
     } catch (error) {

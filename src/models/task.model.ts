@@ -1,4 +1,5 @@
 import { AbstractModel } from './abstract.model';
+import { GroupTask } from './group-task.model';
 
 export class Task extends AbstractModel<number> {
   public title!: string;
@@ -6,4 +7,5 @@ export class Task extends AbstractModel<number> {
   public dateCreate!: Date;
   public dateUpdate!: Date;
   public status!: string;
+  public group!: GroupTask;
 }
