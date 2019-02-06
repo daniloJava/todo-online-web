@@ -61,7 +61,6 @@
         </div>
       </div>
     </div>
-    <app-block-ui v-if="loading" spinnerClass="icon-spinner2 spinner icon-2x text-blue-600" loadingText="Aguardando processamento..."></app-block-ui>
   </div>
 </template>
 

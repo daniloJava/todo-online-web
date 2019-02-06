@@ -1,7 +1,6 @@
 import Router, { Route } from 'vue-router';
 import { PositionResult, Position } from 'vue-router/types/router';
 import Vue from 'vue';
-import Home from './views/Home.vue';
 
 Vue.use(Router);
 
@@ -14,7 +13,7 @@ const router = new Router({
     {
       path: '/',
       name: 'home',
-      component: Home,
+      component: () => import('./views/task/task-list.vue'),
     },
     {
       path: '/tasks',

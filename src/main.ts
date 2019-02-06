@@ -17,7 +17,7 @@ import filters from './filters';
 import { HttpStatusEnum, getStatusText } from '@/enums/http-status.enum';
 
 // Configuração do Axios
-const BASE_API = 'http://localhost:8087/';
+const BASE_API = 'http://127.0.0.1:3088/';
 const HTTP = axios.create({
   baseURL: BASE_API,
   timeout: 60000,

@@ -53,14 +53,12 @@ import locale from 'element-ui/lib/locale';
 locale.use(lang);
 
 // APP UI
-import BlockUi from './block-ui.vue';
 import Card from './card.vue';
 import NetworkStatus from './network-status.vue';
 import PageHeader from './page-header.vue';
 import TableCollapse from './table-collapse.vue';
 
 const components: any = {
-  BlockUi,
   Card,
   NetworkStatus,
   PageHeader,
