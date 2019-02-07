@@ -48,10 +48,7 @@ ENV \
 #============================================================================================
 FROM dependencies AS build
 WORKDIR /app
-
-RUN \ 
-    npm rebuild node-sass \
-    npm run build --silent
+RUN npm run build --silent
 
 #================================== MULTISTAGE -> release ===================================
 # FROM [nome da imagem]:[versão/tag da imagem]
@@ -87,7 +84,7 @@ ARG PORT
 # Variáveis de ambiente com o path da aplicação dentro do container.
 #============================================================================================
 ENV \
-    PORT=${PORT:-80} \
+    PORT=${PORT:-8080} \
     NODE_ENV=production
 
 #============================================================================================
@@ -106,7 +103,7 @@ VOLUME /tmp
 # Irá expor a porta para a máquina host (hospedeira). É possível expor múltiplas portas, como 
 # por exemplo: EXPOSE 80 443 8080
 #============================================================================================
-EXPOSE 80
+EXPOSE 8080
 
 #============================================================================================
 # COPY [arquivo a ser copiado] [destino do arquivo copiado]
@@ -114,6 +111,8 @@ EXPOSE 80
 #
 # Copia os arquivos de configuração do Nginx e da aplicação SPA para dentro do container.
 #============================================================================================
+COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY config/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=build /app/dist /usr/share/nginx/html
 
 #============================================================================================
