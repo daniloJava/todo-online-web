@@ -136,7 +136,7 @@ export const download = <T extends AbstractModel<ID>, ID>(endpoint: string, para
 };
 
 export abstract class AbstractService<T extends AbstractModel<ID>, ID> {
-  public static baseUrl: string = process.env.VUE_APP_BASE_API as string;
+  public static baseUrl: string = 'http://127.0.0.1:3088/' as string;
   public static useJsonServer: boolean = !!process.env.VUE_APP_USE_JSON_SERVER as boolean;
 
   constructor(
