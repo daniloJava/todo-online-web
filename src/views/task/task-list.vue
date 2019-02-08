@@ -1,7 +1,5 @@
 <template>
   <div id="task-list">
-    <app-page-header title="Tasks" subtitle="List"></app-page-header>
-
     <task-filter id="task-filter" :filter="filter" @reset="onReset" @search="onSearch" @create="onCreate" :loading="loading"></task-filter>
     
     <task-table id="task-table" :result="taks" :loading="loading" :pageable="pageable" @page-change="onPageChanged" @edit="onEdit" @view="onView" @refresh="onRefresh" @detail="onDetail"></task-table>

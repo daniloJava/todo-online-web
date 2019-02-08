@@ -14,10 +14,7 @@
     "interface-name": false,
     "ordered-imports": false,
     "object-literal-sort-keys": false,
-    "no-consecutive-blank-lines": false,
-    "member-ordering": [true,
-      "public-before-private",
-      "variables-before-functions"
-    ]
+    "max-line-length": false,
+    "no-consecutive-blank-lines": false
   }
 }

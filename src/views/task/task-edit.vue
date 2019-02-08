@@ -22,9 +22,6 @@ import TaskForm from '@/views/task/shared/task-form.vue';
   },
 })
 export default class TaskEdit extends Vue {
-  private model: Task = new Task();
-
-  private groups: GroupTask[] = [];
 
   protected mounted(): void {
     if (this.$route.params.id) {
@@ -43,6 +40,9 @@ export default class TaskEdit extends Vue {
     this.$store.dispatch('tasks/updateOrUpdate', { model });
     this.$router.push({ name: 'TasksList' });
   }
+
+  private model: Task = new Task();
+  private groups: GroupTask[] = [];
 
   private onAutocomplete(queryString: string, callback: (results: GroupTask[]) => void): void {
     // tslint:disable-next-line:max-line-length
