@@ -1,21 +1,17 @@
 #==================================== MULTISTAGE -> base ====================================
-# FROM [nome da imagem]:[versão/tag da imagem]
+# FROM [name of images]:[Version/tag the image]
 # Referência: https://docs.docker.com/engine/reference/builder/#from
-# 
-# Define uma imagem local ou pública do Docker Store. Aqui é utilizado uma imagem oficial do 
-# NodeJS (baseada na distribuição linux Debian Stretch Slim), cujo objetivo é servir de imagem 
-# base para os demais estágios do processo de build da imagem final, reduzindo seu tamanho.
 #============================================================================================
 FROM node:carbon-slim AS base
 WORKDIR /app
 
-#================================ MULTISTAGE -> dependencies ================================
-# FROM [nome da imagem]:[versão/tag da imagem]
-# Referência: https://docs.docker.com/engine/reference/builder/#from
+#================================ MULTISTAGE -> dependence ================================
+# FROM [name of images]: [Version/tag the image]
+# Reference: https://docs.docker.com/engine/reference/builder/#from
 # 
-# Utiliza a imagem definida no STAGE "base" para baixar as dependências utilizadas no projeto.
+# Uses the image defined in STAGE "base" to lower the dependencies used in the project.
 #============================================================================================
-FROM base AS dependencies
+FROM base AS dependence
 ARG PROXY_URL
 COPY [ "./", "./" ]
 
@@ -30,109 +26,83 @@ RUN \
     npm config set registry=http://registry.npmjs.org/ \
     npm config set strict_ssl false \
     npm config list; \
+    npm rebuild node-sass; \
+    npm run build --silent; \
     npm install --log-level warn; \
     else \
+    npm rebuild node-sass; \
+    npm run build --silent; \
     npm install --log-level warn; \
     fi
+
+
 
 ENV \
     http_proxy=  \
     https_proxy=
 
-#==================================== MULTISTAGE -> build ===================================
-# FROM [nome da imagem]:[versão/tag da imagem]
-# Referência: https://docs.docker.com/engine/reference/builder/#from
-# 
-# Utiliza a imagem definida no STAGE "dependencies" para construir o pacote para distribuição 
-# do projeto.
-#============================================================================================
-FROM dependencies AS build
-WORKDIR /app
-RUN npm run build --silent
-
 #================================== MULTISTAGE -> release ===================================
-# FROM [nome da imagem]:[versão/tag da imagem]
-# Referência: https://docs.docker.com/engine/reference/builder/#from
+# FROM [name of images]:[Version/tag the image]
+# Reference: https://docs.docker.com/engine/reference/builder/#from
 # 
-# Define uma imagem local ou pública do Docker Store. Aqui é utilizado uma imagem oficial do 
-# Nginx (baseada na distribuição linux Debian Stretch Slim). Em sua primeira execução, ela 
-# será baixada para o computador e usada no build para criar as imagens da aplicação.
+# Defines a local or public image of the Docker Store. Here is an official image of the
+# Nginx (based on linux Debian Stretch Slim distribution). In its first execution, it
+# will be downloaded to the computer and used in the build to create the application images.
 #============================================================================================
 FROM nginx:stable AS release
 
 #============================================================================================
-# LABEL maintainer=[nome e e-mail do mantenedor da imagem]
-# Referência: https://docs.docker.com/engine/reference/builder/#label
+# LABEL maintainer=[name and email of image maintainer]
+# Reference: https://docs.docker.com/engine/reference/builder/#label
 #
-# Indica o responsável/autor por manter a imagem.
+# Indicates the responsible/author for maintaining the image.
 #============================================================================================
-LABEL maintainer="Raphael F. Jesus <rjesus@magnasistemas.com.br>"
+LABEL maintainer="Danilo Manoel Oliveira da Silva <danilo.manoel_oliveira@hotmail.com>"
 
 #============================================================================================
 # ARG <nome do argumento>[=<valor padrão>]
-# Referência: https://docs.docker.com/engine/reference/builder/#arg
+# Reference: https://docs.docker.com/engine/reference/builder/#arg
 #
-# A instrução ARG define uma variável que os usuários podem passar no tempo de compilação 
-# para o construtor com o comando docker build.
+# The ARG statement defines a variable that users can pass at compile time
+# for the constructor with the docker build command.
 #============================================================================================
 ARG PORT
 
 #============================================================================================
-# ENV [nome da variável de ambiente]
-# Referência: https://docs.docker.com/engine/reference/builder/#env
+# ENV [name of the environment variable]
+# Reference: https://docs.docker.com/engine/reference/builder/#env
 # 
-# Variáveis de ambiente com o path da aplicação dentro do container.
+# Environment variables with the application path inside the container.
 #============================================================================================
 ENV \
-    PORT=${PORT:-8080} \
+    PORT=${PORT:-80} \
     NODE_ENV=production
 
 #============================================================================================
-# VOLUME [nome do volume]
-# Referência: https://docs.docker.com/engine/reference/builder/#volume
+# VOLUME [volume name]
+# Reference: https://docs.docker.com/engine/reference/builder/#volume
 # 
-# Cria um ponto de montagem com o nome especificado e marca-o como um volume persistente 
-# montado a partir de hospedeiros nativos ou outros containers.
+# Creates a mount point with the specified name and marks it as a persistent volume 
+# mounted from native hosts or other containers.
 #============================================================================================
 VOLUME /tmp
 
 #============================================================================================
-# EXPOSE [número da porta]
-# Referência: https://docs.docker.com/engine/reference/builder/#expose
+# EXPOSE [port number]
+# Reference: https://docs.docker.com/engine/reference/builder/#expose
 #
-# Irá expor a porta para a máquina host (hospedeira). É possível expor múltiplas portas, como 
-# por exemplo: EXPOSE 80 443 8080
+# It will expose the port to the host (host) machine. You can expose multiple ports, such as
+# for example: EXPOSE 80 443 8080
 #============================================================================================
-EXPOSE 8080
+EXPOSE 80
 
 #============================================================================================
-# COPY [arquivo a ser copiado] [destino do arquivo copiado]
-# Referência: https://docs.docker.com/engine/reference/builder/#copy
+# COPY [file to be copied] [destination of copied file]
+# Reference: https://docs.docker.com/engine/reference/builder/#copy
 #
-# Copia os arquivos de configuração do Nginx e da aplicação SPA para dentro do container.
+# Copy the Nginx and SPA application configuration files into the container.
 #============================================================================================
 COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY config/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
-
-#============================================================================================
-# ENTRYPOINT [executável seguido dos parâmetros]
-# Referência: https://docs.docker.com/engine/reference/builder/#entrypoint
-# 
-# Inicia o container como um executável a partir da inicialização da aplicação. Essa instrução 
-# é muito útil quando o container está em modo Swarm (Cluster de containers), pois caso a 
-# aplicação caia, o container cai junto, indicando ao cluster aplicar a política de restart 
-# configurada para a aplicação.
-#============================================================================================
-# TODO Verificar se há necessidade de trecho, uma vez que a imagem original já define-o.
-
-#============================================================================================
-# HEALTHCHECK --interval=[duração em segundos] --timeout=[duração em segundos]
-# Referência: https://docs.docker.com/engine/reference/builder/#healthcheck
-# 
-# Diz ao Docker como testar um container para verificar se ele ainda está funcionando. Isso 
-# pode detectar casos como um servidor web que está preso em um loop infinito e incapaz de 
-# lidar com novas conexões, mesmo que o processo do servidor ainda esteja em execução.
-#============================================================================================
-# TODO Verificar como validar a saúde da aplicação
-
+COPY --from=1 /app/dist /usr/share/nginx/html
+RUN ls -la /usr/share/nginx/html

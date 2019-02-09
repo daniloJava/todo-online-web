@@ -1,0 +1,34 @@
+version: '3'
+services:
+  todo-task-web:
+    image: danilojava/todo-online:todo-online-web
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 80:80
+    networks:
+      - microservices
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+        reservations:
+          memory: 200M
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 15s
+        max_attempts: 5
+        window: 120s
+      update_config:
+        parallelism: 2
+        delay: 10s
+        failure_action: continue
+        monitor: 60s
+        max_failure_ratio: 0.5
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  microservices:
+    driver: overlay

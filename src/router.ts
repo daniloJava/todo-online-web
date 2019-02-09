@@ -1,36 +1,53 @@
-import Router, { Route } from 'vue-router';
-import { PositionResult, Position } from 'vue-router/types/router';
 import Vue from 'vue';
+import Router from 'vue-router';
+import Layout from '@/views/layout/Layout.vue';
 
 Vue.use(Router);
 
-const router = new Router({
-  // mode: 'history',
-  scrollBehavior: (to: Route, from: Route, savedPosition: void | Position): PositionResult => {
-    return { x: 0, y: 0 };
-  },
+export default new Router({
+  mode: 'history',
+  scrollBehavior: () => ({ x: 0, y: 0 }),
+  base: process.env.BASE_URL,
   routes: [
+    { path: '/login', component: () => import(/* webpackChunkName: "login" */ '@/views/login/index.vue') },
+    { path: '/404', component: () => import(/* webpackChunkName: "404" */ '@/views/404.vue') },
     {
       path: '/',
-      name: 'home',
-      component: () => import('./views/task/task-list.vue'),
+      component: Layout,
+      redirect: '/dashboard',
+      name: 'Dashboard',
+      meta: { hidden: true },
+      children: [{
+        path: 'dashboard',
+        component: () => import(/* webpackChunkName: "dashboard" */ '@/views/dashboard/index.vue'),
+      }],
     },
     {
-      path: '/tasks',
-      name: 'TasksList',
-      component: () => import('./views/task/task-list.vue'),
+      path: '/task',
+      name: 'Task',
+      meta: { title: 'Task', icon: 'form' },
+      component: Layout,
+      children: [
+        {
+          path: 'list',
+          name: 'TasksList',
+          component: () => import(/* webpackChunkName: "form" */ '@/views/task/task-list.vue'),
+          meta: { title: 'List', icon: 'form' },
+        },
+        {
+          path: ':id/edit',
+          name: 'TasksEdit',
+          component: () => import(/* webpackChunkName: "form" */ '@/views/task/task-edit.vue'),
+          meta: { title: 'Edit', icon: 'form' },
+        },
+        {
+          path: 'create',
+          name: 'TasksCreate',
+          component: () => import(/* webpackChunkName: "form" */ '@/views/task/task-edit.vue'),
+          meta: { title: 'Create', icon: 'form' },
+        },
+      ],
     },
-    {
-      path: '/tasks/:id/edit',
-      name: 'TasksDetail',
-      component: () => import('./views/task/task-edit.vue'),
-    },
-    {
-      path: '/tasks/create',
-      name: 'TasksCreate',
-      component: () => import('./views/task/task-edit.vue'),
-    },
+    { path: '*', redirect: '/404' },
   ],
 });
-
-export default router;

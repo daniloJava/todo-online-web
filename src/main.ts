@@ -1,20 +1,20 @@
-import axios from 'axios';
-import qs from 'qs';
 import Vue from 'vue';
-import Component from 'vue-class-component';
+import axios from 'axios';
 import VueAxios from 'vue-axios';
-import 'element-ui/lib/theme-chalk/index.css';
-import 'bootstrap-vue/dist/bootstrap-vue.css';
-import 'bootstrap/dist/css/bootstrap.css';
-import 'viewerjs/dist/viewer.css';
-import 'highlight.js/styles/github.css';
+import 'normalize.css';
+import ElementUI from 'element-ui';
+import Component from 'vue-class-component';
+import SvgIcon from 'vue-svgicon';
+import '@/styles/index.scss';
+import '@/icons/components';
 
-import App from './App.vue';
-import router from './router';
-import store from './store';
-import components from './components';
+import App from '@/App.vue';
+import router from '@/router';
+import store from '@/store';
+import '@/registerServiceWorker';
 import filters from './filters';
 import { HttpStatusEnum, getStatusText } from '@/enums/http-status.enum';
+
 
 // Configuração do Axios
 const BASE_API = 'http://127.0.0.1:3088/';
@@ -26,9 +26,6 @@ const HTTP = axios.create({
     'Access-Control-Allow-Methods': 'POST, GET, PUT, OPTIONS, DELETE',
     'Content-Type': 'application/json',
     'Accept': 'application/json',
-  },
-  paramsSerializer: (params) => {
-    return qs.stringify(params, { arrayFormat: 'repeat' });
   },
 });
 
@@ -74,10 +71,16 @@ HTTP.interceptors.response.use(
   },
 );
 
+
 Vue.use(VueAxios, HTTP);
-Vue.use(components);
 Vue.use(filters);
 
+Vue.use(ElementUI);
+Vue.use(SvgIcon, {
+  tagName: 'svg-icon',
+  defaultWidth: '1em',
+  defaultHeight: '1em',
+});
 // Register the router hooks with their names
 Component.registerHooks([
   'beforeRouteEnter',

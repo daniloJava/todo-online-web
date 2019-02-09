@@ -1,7 +1,7 @@
 version: '3'
 services:
   todo-task-web:
-    image: todo_online-webtestee:todo_online-webtestee
+    image: todo_online-web:todo_online-web
     environment:
       - NODE_ENV=production
     ports:
