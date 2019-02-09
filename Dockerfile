@@ -30,10 +30,16 @@ RUN \
     npm config set registry=http://registry.npmjs.org/ \
     npm config set strict_ssl false \
     npm config list; \
+    npm rebuild node-sass; \
+    npm run build --silent; \
     npm install --log-level warn; \
     else \
+    npm rebuild node-sass; \
+    npm run build --silent; \
     npm install --log-level warn; \
     fi
+
+
 
 ENV \
     http_proxy=  \
@@ -46,10 +52,8 @@ ENV \
 # Utiliza a imagem definida no STAGE "dependencies" para construir o pacote para distribuição 
 # do projeto.
 #============================================================================================
-FROM dependencies AS build
-WORKDIR /app
-RUN npm run build --silent
-
+# FROM dependencies AS build
+# WORKDIR /app
 #================================== MULTISTAGE -> release ===================================
 # FROM [nome da imagem]:[versão/tag da imagem]
 # Referência: https://docs.docker.com/engine/reference/builder/#from
@@ -66,7 +70,7 @@ FROM nginx:stable AS release
 #
 # Indica o responsável/autor por manter a imagem.
 #============================================================================================
-LABEL maintainer="Raphael F. Jesus <rjesus@magnasistemas.com.br>"
+LABEL maintainer="Danilo Manoel Oliveira da Silva <danilo.manoel_oliveira@hotmail.com>"
 
 #============================================================================================
 # ARG <nome do argumento>[=<valor padrão>]
@@ -84,7 +88,7 @@ ARG PORT
 # Variáveis de ambiente com o path da aplicação dentro do container.
 #============================================================================================
 ENV \
-    PORT=${PORT:-8080} \
+    PORT=${PORT:-80} \
     NODE_ENV=production
 
 #============================================================================================
@@ -103,7 +107,7 @@ VOLUME /tmp
 # Irá expor a porta para a máquina host (hospedeira). É possível expor múltiplas portas, como 
 # por exemplo: EXPOSE 80 443 8080
 #============================================================================================
-EXPOSE 8080
+EXPOSE 80
 
 #============================================================================================
 # COPY [arquivo a ser copiado] [destino do arquivo copiado]
@@ -113,8 +117,8 @@ EXPOSE 8080
 #============================================================================================
 COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY config/nginx/default.conf /etc/nginx/conf.d/default.conf
-COPY --from=build /app/dist /usr/share/nginx/html
-
+COPY --from=1 /app/dist /usr/share/nginx/html
+RUN ls -la /usr/share/nginx/html
 #============================================================================================
 # ENTRYPOINT [executável seguido dos parâmetros]
 # Referência: https://docs.docker.com/engine/reference/builder/#entrypoint

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-DOCKER_TAG=todo_online-webtestee:todo_online-webtestee
+DOCKER_TAG=todo_online-webtestee:todo_online-webtestee333522
 
 # Constrói a imagem Docker do projeto a partir do Dockerfile.
 docker build --tag ${DOCKER_TAG} .
