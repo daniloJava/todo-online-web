@@ -2,7 +2,7 @@
   <div class="app-container">
     <el-table v-loading="loading" :data="result.page.data" element-loading-text="Loading" border fit highlight-current-row :empty-text="emptyText" >
       <el-table-column align="center" label="ID" width="95">
-        <template slot-scope="scope"> {{ scope.$index }} </template>
+        <template slot-scope="scope"> {{ scope.$index + 1 }} </template>
       </el-table-column>
       <el-table-column label="Title">
         <template slot-scope="scope"> 
@@ -11,32 +11,33 @@
       </el-table-column>
       <el-table-column label="Description">
         <template slot-scope="scope"> 
-          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.description | startCase }}</router-link>
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.description | startCase }}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="Crate date">
         <template slot-scope="scope"> 
-          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.dateCreate | formatDateTime }}</router-link>
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.dateCreate | formatDateTime }}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="Crate update">
         <template slot-scope="scope"> 
-          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.dateUpdate | formatDateTime }}</router-link>
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.dateUpdate | formatDateTime }}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="Group">
         <template slot-scope="scope"> 
-          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.group.name | startCase }}</router-link>
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ !scope.row.group || scope.row.group.name | startCase }}</router-link>
         </template>
       </el-table-column>
       <el-table-column label="Status">
         <template slot-scope="scope"> 
-          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.status | startCase }}</router-link>
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.status | startCase }}</router-link>
         </template>
       </el-table-column>
-      <el-table-column label="Actions">
+      <el-table-column label="Actions" >
         <template slot-scope="scope"> 
-          <el-button type="danger" @click="toTaskDelete(scope.row)"><i class="el-icon-delete"></i></el-button>
+          <el-button type="danger" @click="toTaskDelete(scope.row)" size="mini" circle><i class="el-icon-delete"></i></el-button>
+          <el-button type="primary" @click="onEdit(scope.row)" size="mini" circle><i class="el-icon-edit"></i></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -57,7 +58,6 @@
 <script lang="ts">
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Location } from 'vue-router';
-import { Notification } from 'element-ui';
 import { ResultList, Task } from '@/models';
 import { TaskService } from '@/services';
 
@@ -88,33 +88,16 @@ export default class TaskTable extends Vue {
     this.$emit('refresh', pageNumber);
   }
 
-  private onDetail(model: Task): void {
-    this.$emit('detail', model);
+  private toTaskDetail(model: Task): Location {
+    return { name: 'TasksView', params: { id: '' + model.id } };
   }
 
-  private toTaskDetail(model: Task): Location {
-    return { name: 'TasksDetail', params: { id: '' + model.id } };
+  private onEdit(model: Task) {
+    this.$emit('edit', model);
   }
 
   private toTaskDelete(model: Task): void {
-    this.$confirm(`This will permanently delete the task "${model.title.toUpperCase()}". Continue?`, 'Warning', {
-      confirmButtonText: 'OK',
-      cancelButtonText: 'Cancel',
-      type: 'warning',
-    }).then(() => {
-      new TaskService().delete(model.id).toPromise()
-        .then(() => {
-          Notification.success({
-            title: 'Deleted',
-            message: `Delete completed ${model.title}.`,
-          });
-        });
-    }).catch(() => {
-      Notification.info({
-        title: 'Deleted',
-        message: 'Delete canceled.',
-      });
-    });
+    this.$emit('delete', model);
   }
 
   @Watch('result', { immediate: false, deep: true })

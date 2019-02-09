@@ -12,7 +12,7 @@
 import { Component, Vue } from 'vue-property-decorator';
 import { Observable, Subscription } from 'rxjs';
 
-import { Task, GroupTask } from '@/models';
+import { Task, GroupTask, Pageable, FilterTask } from '@/models';
 import { TaskService, GroupTaskService } from '@/services';
 import TaskForm from '@/views/task/shared/task-form.vue';
 

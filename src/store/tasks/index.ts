@@ -83,7 +83,7 @@ export const mutations = {
 
     Notification.info({
       title: 'Informativo',
-      message: 'Registro Atualizado com sucesso.',
+      message: 'Update Success.',
     });
   },
 } as MutationTree<State>;
@@ -114,7 +114,6 @@ export const actions = {
       if (!page) {
         store.commit(Types.UPDATE_SUCCESS);
         store.commit(Types.CLEAR);
-        store.dispatch('tasks/query', { filter: new FilterTask(), pageable: new Pageable()}, { root: true });
       }
 
       store.commit(Types.UPDATE_SUCCESS);

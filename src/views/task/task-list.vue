@@ -2,7 +2,7 @@
   <div id="task-list">
     <task-filter id="task-filter" :filter="filter" @reset="onReset" @search="onSearch" @create="onCreate" :loading="loading"></task-filter>
     
-    <task-table id="task-table" :result="taks" :loading="loading" :pageable="pageable" @page-change="onPageChanged" @edit="onEdit" @view="onView" @refresh="onRefresh" @detail="onDetail"></task-table>
+    <task-table id="task-table" :result="taks" :loading="loading" :pageable="pageable" @page-change="onPageChanged" @edit="onEdit" @refresh="onRefresh" @delete="onDelete" ></task-table>
   </div>
 </template>
 
@@ -10,6 +10,7 @@
 import _ from 'lodash';
 import { Component, Model, Vue } from 'vue-property-decorator';
 import { Observable, Subscription } from 'rxjs';
+import { Notification } from 'element-ui';
 
 import { Task, FilterTask, Page, ResultList, Pageable } from '@/models';
 import { TaskService } from '@/services';
@@ -52,27 +53,41 @@ export default class TaskList extends Vue {
     this.dispatchTasks(this.filter, new Pageable(pageNumber));
   }
 
-  private onDetail(model: Task): void {
-    this.$router.push({ name: 'TaskDetail', params: { id: '' + model.id } });
-  }
-
   private onEdit(model: Task): void {
-    this.$router.push({ name: 'TaskEdit', params: { id: '' + model.id } });
+    this.$router.push({ name: 'TasksEdit', params: { id: '' + model.id } });
   }
 
   private onCreate(model: Task): void {
     this.$router.push({ name: 'TasksCreate' });
   }
 
-  private onView(model: Task): void {
-    this.$router.push({ name: 'TaskDetail', params: { id: '' + model.id } });
+  private onDelete(model: Task): void {
+    this.$confirm(`This will permanently delete the task "${model.title.toUpperCase()}". Continue?`, 'Warning', {
+      confirmButtonText: 'OK',
+      cancelButtonText: 'Cancel',
+      type: 'warning',
+    }).then(() => {
+      new TaskService().delete(model.id).toPromise()
+        .then(() => {
+          Notification.success({
+            title: 'Deleted',
+            message: `Delete completed ${model.title}.`,
+          });
+          this.onSearch();
+        });
+    }).catch(() => {
+      Notification.info({
+        title: 'Deleted',
+        message: 'Delete canceled.',
+      });
+    });
   }
 
   private get loading(): boolean {
     return this.$store.getters['tasks/loading'];
   }
 
-    private get taks(): ResultList<Task> {
+  private get taks(): ResultList<Task> {
     return this.$store.getters['tasks/resultList'];
   }
 

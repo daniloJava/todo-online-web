@@ -105,4 +105,3 @@ EXPOSE 80
 COPY config/nginx/nginx.conf /etc/nginx/nginx.conf
 COPY config/nginx/default.conf /etc/nginx/conf.d/default.conf
 COPY --from=1 /app/dist /usr/share/nginx/html
-RUN ls -la /usr/share/nginx/html
