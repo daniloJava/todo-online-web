@@ -1,0 +1,14 @@
+version: '3'
+services:
+  todo-task-web:
+    image: danilojava/todo-online:todo-online-web
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 80:80
+    networks:
+      - microservices
+
+networks:
+  microservices:
+    driver: overlay
