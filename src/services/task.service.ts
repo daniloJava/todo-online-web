@@ -9,10 +9,6 @@ import { AbstractService, findById, query } from '@/services';
 
 export class TaskService extends AbstractService<Task, number> {
 
-  constructor() {
-    super(`${AbstractService.baseUrl}/task/task`);
-  }
-
   public static query(params: any, pageable: Pageable): Observable<Page<Task>> {
     return query(`${this.endpoint}`, normalizeFilter(params), pageable);
   }
@@ -23,6 +19,10 @@ export class TaskService extends AbstractService<Task, number> {
 
   private static get endpoint(): string {
     return `${AbstractService.baseUrl}/task/task`;
+  }
+
+  constructor() {
+    super(`${AbstractService.baseUrl}/task/task`);
   }
 }
 

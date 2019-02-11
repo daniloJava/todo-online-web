@@ -22,18 +22,9 @@ import TaskForm from '@/views/task/shared/task-form.vue';
   },
 })
 export default class TaskEdit extends Vue {
+
   private model: Task = new Task();
-
   private groups: GroupTask[] = [];
-
-  protected mounted(): void {
-    if (this.$route.params.id) {
-      TaskService.findById(parseInt(this.$route.params.id, 10)).toPromise()
-        .then((task: Task) => {
-          this.model = task;
-        });
-    }
-  }
 
   public onCancel(model: Task): void {
     this.$router.push({ name: 'TasksList' });
@@ -42,6 +33,15 @@ export default class TaskEdit extends Vue {
   public onUpdate(model: Task): void {
     this.$store.dispatch('tasks/updateOrUpdate', { model });
     this.$router.push({ name: 'TasksList' });
+  }
+
+  protected mounted(): void {
+    if (this.$route.params.id) {
+      TaskService.findById(parseInt(this.$route.params.id, 10)).toPromise()
+        .then((task: Task) => {
+          this.model = task;
+        });
+    }
   }
 
   private onAutocomplete(queryString: string, callback: (results: GroupTask[]) => void): void {

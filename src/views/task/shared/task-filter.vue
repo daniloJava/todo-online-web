@@ -1,30 +1,18 @@
 <template>
-  <div class="container">
-    <el-form id="form" ref="form" :model="filter" label-position="top">
-      <div class="row">
-        <div class="col">
-          <el-form-item id="title" prop="title">
-            <div slot="label">
-              <span>Title</span>
-            </div>
-            <el-input ref="title" type="text" v-model="filter.title" :maxlength="7" :class="{'is-success': !!filter.title}"></el-input>
-          </el-form-item>
-        </div>
-        <div class="col">
-          <el-form-item id="status" prop="status">
-            <div slot="label">
-              <span>Status</span>
-            </div>
-            <el-input type="text" v-model="filter.status" :maxlength="17" :class="{'is-success': !!filter.status}"></el-input>
-          </el-form-item>
-        </div>
-      </div>
+  <div class="app-container">
+    <el-form ref="form" :model="filter" label-width="50px">
+      <el-form-item id="title" label="Title" prop="title">
+        <el-input ref="title" type="text" v-model="filter.title" :maxlength="7" :class="{'is-success': !!filter.title}"></el-input>
+      </el-form-item>
+      <el-form-item id="status" prop="status" label="Status" >
+        <el-input type="text" v-model="filter.status" :maxlength="17" :class="{'is-success': !!filter.status}"></el-input>
+      </el-form-item>
+      <el-form-item>
+        <el-button id="reset" type="default" @click="onReset"><i class="icon-eraser2 mr-1"></i>Limpar</el-button>
+        <el-button id="search" type="primary" :loading="loading" @click="onSearch"><i :class="[ !loading ? 'icon-search4' : '', 'mr-1' ]"></i>{{ loading ? 'Pesquisando...' : 'Pesquisar' }}</el-button>
+        <el-button id="create" type="success" :loading="loading" @click="onCreate"><i :class="[ !loading ? 'icon-search4' : '', 'mr-1' ]"></i>Create</el-button>
+      </el-form-item>
     </el-form>
-    <div slot="footer">
-      <el-button id="reset" type="default" @click="onReset"><i class="icon-eraser2 mr-1"></i>Limpar</el-button>
-      <el-button id="search" type="primary" :loading="loading" @click="onSearch"><i :class="[ !loading ? 'icon-search4' : '', 'mr-1' ]"></i>{{ loading ? 'Pesquisando...' : 'Pesquisar' }}</el-button>
-      <el-button id="create" type="success" :loading="loading" @click="onCreate"><i :class="[ !loading ? 'icon-search4' : '', 'mr-1' ]"></i>Create</el-button>
-    </div>
   </div>
 </template>
 
