@@ -1,65 +1,56 @@
 <template>
-  <div>
-    <div class="alert alert-secondary border-0 rounded-0">
-      <small>Clique sobre a linha do registro para detalhá-lo.</small>
-    </div>
-    <div class="table-responsive">
-      <table class="table table-striped table-hover">
-        <thead>
-          <tr>
-            <th class="number-column">#</th>
-            <th class="text-center">Title</th>
-            <th>Description</th>
-            <th>Crate date</th>
-            <th>Crate update</th>
-            <th>Group</th>
-            <th>Status</th>
-            <th>Acões</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="(task, index) in result.page.data" :key="task.id">
-            <td class="text-center">
-              {{ result.position(index) }}
-            </td>
-            <td class="text-center">
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.title | startCase }}</router-link>
-            </td>
-            <td>
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.description | startCase }}</router-link>
-            </td>
-            <td>
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.dateCreate | formatDateTime }}</router-link>
-            </td>
-            <td>
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.dateUpdate | formatDateTime }}</router-link>
-            </td>
-            <td>
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.group.name | startCase }}</router-link>
-            </td>
-            <td>
-              <router-link :to="toTaskDetail(task)" class="text-dark">{{ task.status | startCase }}</router-link>
-            </td>
-            <td>
-              <el-button type="danger" @click="toTaskDelete(task)"><i class="el-icon-delete"></i></el-button>
-            </td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-    <div class="card-footer text-center" v-if="result.isEmpty()">
-      <i class="icon-folder-search icon-2x text-muted mb-1"></i>
-      <div class="card-title text-muted mb-0">{{ emptyText }}</div>
-    </div>
-    <div slot="footer"  v-else>
-      <div class="row">
-        <div class="col-sm">
-            <span class="b-pagination-line">{{ total }}</span>
-        </div>
-        <div class="col-sm">
-          <b-pagination size="md" :total-rows="result.page.count" v-model="currentPage" :per-page="result.pageable.pageSize" @change="onPageChange"></b-pagination>
-        </div>
-      </div>
+  <div class="app-container">
+    <el-table v-loading="loading" :data="result.page.data" element-loading-text="Loading" border fit highlight-current-row :empty-text="emptyText" >
+      <el-table-column align="center" label="ID" width="95">
+        <template slot-scope="scope"> {{ scope.$index + 1 }} </template>
+      </el-table-column>
+      <el-table-column label="Title">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.title | startCase }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Description">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.description | startCase }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Crate date">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.dateCreate | formatDateTime }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="User update">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.createdBy.username | startCase }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Group">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ !scope.row.group || scope.row.group.name | startCase }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Status">
+        <template slot-scope="scope"> 
+          <router-link :to="toTaskDetail(scope.row)" class="text-dark">{{ scope.row.status | startCase }}</router-link>
+        </template>
+      </el-table-column>
+      <el-table-column label="Actions" >
+        <template slot-scope="scope"> 
+          <el-button type="danger" @click="toTaskDelete(scope.row)" size="mini" circle><i class="el-icon-delete"></i></el-button>
+          <el-button type="primary" @click="onEdit(scope.row)" size="mini" circle><i class="el-icon-edit"></i></el-button>
+        </template>
+      </el-table-column>
+    </el-table>
+    <div class="block">
+      <span class="demonstration">{{ total }}</span>
+      <el-pagination
+        @size-change="onPageChange"
+        @current-change="onPageChange"
+        :current-page.sync="currentPage"
+        :page-size="10"
+        layout="total, prev, pager, next"
+        :total="result.page.count">
+      </el-pagination>
     </div>
   </div>
 </template>

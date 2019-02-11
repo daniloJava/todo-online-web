@@ -7,3 +7,4 @@ export * from './pageable.model';
 export * from './result-list.model';
 export * from './sub-example.model';
 export * from './task.model';
+export * from './user.model';

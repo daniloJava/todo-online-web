@@ -2,6 +2,7 @@ import Vue from 'vue';
 import Vuex, { ActionContext } from 'vuex';
 
 import tasks from './tasks';
+import user from './user';
 
 Vue.use(Vuex);
 
@@ -11,6 +12,7 @@ const config: any = {
   strict: debug,
   modules: {
     tasks,
+    user,
   },
 };
 

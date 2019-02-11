@@ -1,5 +1,4 @@
 import axios from 'axios';
-import qs from 'qs';
 import Vue from 'vue';
 import Component from 'vue-class-component';
 import VueAxios from 'vue-axios';
@@ -14,7 +13,6 @@ import router from './router';
 import store from './store';
 import components from './components';
 import filters from './filters';
-import { HttpStatusEnum, getStatusText } from '@/enums/http-status.enum';
 
 // Configuração do Axios
 const BASE_API = 'http://127.0.0.1:3088/';
@@ -27,28 +25,21 @@ const HTTP = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  paramsSerializer: (params) => {
-    return qs.stringify(params, { arrayFormat: 'repeat' });
-  },
 });
 
 // Interceptador das Requisições
 HTTP.interceptors.request.use(
   (config) => {
-    return config;
+    return new Promise((resolve, reject) => {
+      const user = store.getters['user/user'];
+      if (user.token) {
+        config.headers.Authorization = 'Bearer ' + user.token;
+      }
+      resolve(config);
+    });
   },
   (error) => {
     const err = !error.response ? error : error.response.data;
-
-    if (!err.code) {
-      err.code = HttpStatusEnum.INTERNAL_SERVER_ERROR;
-      err.message = getStatusText(err.code);
-
-    } else if (err.code === 'ECONNABORTED') {
-      err.code = HttpStatusEnum.REQUEST_TIMEOUT;
-      err.message = getStatusText(err.code);
-    }
-
     return Promise.reject(err);
   },
 );
@@ -60,16 +51,6 @@ HTTP.interceptors.response.use(
   },
   (error) => {
     const err = !error.response ? error : error.response.data;
-
-    if (!err.code) {
-      err.code = HttpStatusEnum.INTERNAL_SERVER_ERROR;
-      err.message = getStatusText(err.code);
-
-    } else if (err.code === 'ECONNABORTED') {
-      err.code = HttpStatusEnum.REQUEST_TIMEOUT;
-      err.message = getStatusText(err.code);
-    }
-
     return Promise.reject(err);
   },
 );
